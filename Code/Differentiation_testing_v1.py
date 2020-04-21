@@ -22,6 +22,13 @@ py.rcParams.update({'font.size': 14})
 # import the file where the differentiation matrix operators are defined
 from diff_matrices import Diff_mat_1D, Diff_mat_2D   
 
+def my_contourf(x,y,F,ttl):
+    py.contourf(x,y,F,41,cmap = 'inferno')
+    py.colorbar()
+    py.xlabel('x'); py.ylabel('y'); py.title(ttl)
+    return 0
+    
+
 
 # Define independent variables
 Nx = 80                         # No. of grid points along x direction
@@ -40,13 +47,17 @@ F = np.exp(-X**2-3*Y**2)        # 2D Gaussian test function
 Fx = np.multiply(X,F)*(-2)      # Analytical value of dF/dx
 Fy = np.multiply(Y,F)*(-6)      # Analytical value of dF/dy
 
+F2x = np.multiply(2*X**2-1,F)*(2)      # Analytical value of d2F/dx2
+F2y = np.multiply(6*Y**2-1,F)*(6)      # Analytical value of d2F/dy2
+
+
 G = np.exp(-x**2)
 Gx = np.multiply(x,G)*(-2)
 G2x = np.multiply(2*x**2-1,G)*(2)
 
 
-Dx_1d, D2x_1d = Diff_mat_1D(Nx)     # Calling 1D matrix operators from function
-Dx_2d, Dy_2d = Diff_mat_2D(Nx,Ny)   # Calling 2D matrix operators from funciton
+Dx_1d, D2x_1d = Diff_mat_1D(Nx)                     # Calling 1D matrix operators from function
+Dx_2d, Dy_2d, D2x_2d, D2y_2d = Diff_mat_2D(Nx,Ny)   # Calling 2D matrix operators from funciton
 
 # Differentiation using matrix operators. The division by 2dx and 2dy are needed as they are not defined within the funcitons
 
@@ -56,6 +67,8 @@ d2Gx =  D2x_1d*G/(dx**2)     # dF/dx from matrix operator
 dFx = (Dx_2d*F.ravel()).reshape([Ny,Nx])/(2*dx)     # dF/dx from matrix operator
 dFy = (Dy_2d*F.ravel()).reshape([Ny,Nx])/(2*dy)     # dF/dy from matrix operator
 
+d2Fx = (D2x_2d*F.ravel()).reshape([Ny,Nx])/(dx**2)     # d2F/dx2 from matrix operator
+d2Fy = (D2y_2d*F.ravel()).reshape([Ny,Nx])/(dy**2)     # d2F/dy2 from matrix operator
 
 # Plotting 1D differntiations
 py.close('all')
@@ -78,28 +91,27 @@ py.xlabel('x'); py.ylabel(r'$d^2G/dx^2$'); py.title('Second derivative')
 
 
 # Plotting 2D differentiations
+
+# First partial derivatives
 py.figure(figsize = (14,4.8))
-py.subplot(1,2,1)
-py.contourf(x,y,Fx,41,cmap = 'inferno')
-py.colorbar()
-py.xlabel('x'); py.ylabel('y'); py.title('Analytical dF/dx')
-py.subplot(1,2,2)
-py.contourf(x,y,dFx,41,cmap = 'inferno')
-py.colorbar()
-py.xlabel('x'); py.ylabel('y'); py.title('Matrix operator dF/dx')
+py.subplot(1,2,1); my_contourf(x,y,Fx,r'Analytical $dF/dx$')
+py.subplot(1,2,2); my_contourf(x,y,dFx,r'Matrix operator $dF/dx$')
+
 
 py.figure(figsize = (14,4.8))
-py.subplot(1,2,1)
-py.contourf(x,y,Fy,41,cmap = 'inferno')
-py.colorbar()
-py.xlabel('x'); py.ylabel('y'); py.title('Analytical dF/dy')
-py.subplot(1,2,2)
-py.contourf(x,y,dFy,41,cmap = 'inferno')
-py.colorbar()
-py.xlabel('x'); py.ylabel('y'); py.title('Matrix operator dF/dy')
+py.subplot(1,2,1); my_contourf(x,y,Fy,r'Analytical $dF/dy$')
+py.subplot(1,2,2); my_contourf(x,y,dFy,r'Matrix operator $dF/dy$')
 
 
+# Second partial derivatives
+py.figure(figsize = (14,4.8))
+py.subplot(1,2,1); my_contourf(x,y,F2x,r'Analytical $d^2F/dx^2$')
+py.subplot(1,2,2); my_contourf(x,y,d2Fx,r'Matrix operator $d^2F/dx^2$')
 
+
+py.figure(figsize = (14,4.8))
+py.subplot(1,2,1); my_contourf(x,y,F2y,r'Analytical $d^2F/dy^2$')
+py.subplot(1,2,2); my_contourf(x,y,d2Fy,r'Matrix operator $d^2F/dy^2$')
 
 
 

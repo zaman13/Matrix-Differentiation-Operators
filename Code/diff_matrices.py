@@ -5,6 +5,8 @@ Created on Sat Apr 18 21:11:50 2020
 @author: Mohammad Asif Zaman
 
 Differentiaion matrix operators in 1D and 2D
+-   First derivatives d/dx, d/dy
+-   Second derivatives d2/dx2, d2/dy2
 
 Notes:
         - kron() is different in python compared to MATLAB. The matrix order is reveresed here.
@@ -37,8 +39,8 @@ def Diff_mat_1D(Nx):
 
 def Diff_mat_2D(Nx,Ny):
     # 1D differentiation matrices
-    Dx_1d, Dx2_1d = Diff_mat_1D(Nx)
-    Dy_1d, Dy2_1d = Diff_mat_1D(Ny)
+    Dx_1d, D2x_1d = Diff_mat_1D(Nx)
+    Dy_1d, D2y_1d = Diff_mat_1D(Ny)
 
 
     # Sparse identity matrices
@@ -48,9 +50,14 @@ def Diff_mat_2D(Nx,Ny):
 
     
     # 2D matrix operators from 1D operators using kronecker product
+    # First partial derivatives
     Dx_2d = sp.kron(Iy,Dx_1d)
     Dy_2d = sp.kron(Dy_1d,Ix)
     
+    # Second partial derivatives
+    D2x_2d = sp.kron(Iy,D2x_1d)
+    D2y_2d = sp.kron(D2y_1d,Ix)
+    
    
     
-    return Dx_2d, Dy_2d
+    return Dx_2d, Dy_2d, D2x_2d, D2y_2d
