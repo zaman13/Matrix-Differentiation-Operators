@@ -60,4 +60,5 @@ def Diff_mat_2D(Nx,Ny):
     
    
     
-    return Dx_2d, Dy_2d, D2x_2d, D2y_2d
+    # Return compressed Sparse Row format of the sparse matrices
+    return Dx_2d.tocsr(), Dy_2d.tocsr(), D2x_2d.tocsr(), D2y_2d.tocsr()
